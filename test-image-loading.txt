@@ -1,0 +1,23 @@
+Example workflow for loading images:
+
+# 1. Install opticl library
+sbcl
+(ql:quickload :opticl)
+(quit)
+
+# 2. Load your code and process an image
+sbcl
+(load "edge-detection.lisp")
+(ql:quickload :opticl)
+
+# If you have a photo.jpg in the current directory:
+(process-image-file "photo.jpg" :threshold 50 :output-path "edges-output.png")
+
+# Or load and process manually:
+(defvar my-photo (load-image-file "photo.jpg"))
+(defvar w (array-dimension my-photo 1))
+(defvar h (array-dimension my-photo 0))
+(defvar edges (detect-edges my-photo w h 50))
+(save-edge-image edges w h "my-edges.png")
+
+(quit)
