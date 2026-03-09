@@ -218,3 +218,37 @@ def extract_segments(edges, threshold=50):
 ## -- ##
 
 img = np.array(downscale("frame1.jpg", 128))
+
+# Edges
+sobel_x_result = convolution(rgb_to_hsv(img)[:,:,1], sobel_x)
+sobel_y_result = convolution(rgb_to_hsv(img)[:,:,1], sobel_y)
+edges = combine_edge_xy(sobel_x_result, sobel_y_result)
+edges = threshold(edges, edges.mean() + edges.std())
+edges = morphological_closing(edges, structure=np.ones((5, 5), dtype=np.uint8))
+
+# segments
+segments = extract_segments(edges)
+
+print(segments)
+
+# Largest segment
+largest_segment = max(segments, key=len)
+
+# display all segments w/ largest segment having a different color, w/ radius of each segment, overlayed on image opacity 80
+
+overlay = img.copy()
+for i, segment in enumerate(segments):
+    # text on center
+    center_y = sum(p[0] for p in segment) // len(segment)
+    center_x = sum(p[1] for p in segment) // len(segment)
+    plt.text(s=f"Segment {i+1}", x=center_x, y=center_y, color='yellow', fontsize=8, ha='center', va='center')
+
+    for y, x in segment:
+        overlay[y, x] = [255, 0, 0]  # Red for all segments
+
+for y, x in largest_segment:
+    overlay[y, x] = [0, 255, 0]  # Green for largest segment
+plt.imshow(overlay)
+plt.title('Segments with Largest Highlighted')
+plt.axis('off')
+plt.show()
