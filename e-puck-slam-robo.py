@@ -130,7 +130,7 @@ class MotionDetector:
         self._prev_px    = 0.0
         self._prev_py    = 0.0
 
-    def update(self, camera: Camera) -> None:
+    def update(self, camera: Camera, robot_x: float = 0.0, robot_y: float = 0.0) -> None:
         self._dist_moved += math.hypot(robot_x - self._prev_px,
                                        robot_y - self._prev_py)
         self._prev_px = robot_x; self._prev_py = robot_y
